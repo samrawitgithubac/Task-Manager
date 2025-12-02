@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -10,23 +11,18 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
     // REGISTER
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        // Validate input
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'role' => 'nullable|string|in:user,admin',
-        ]);
+        // validated data from RegisterRequest
+        $data = $request->validated();
 
-        // Get role from request, default to 'user' if not provided
-        $role = $request->input('role', 'user');
-        
+        // Backend controls role: set admin for configured email if needed, otherwise 'user'
+        $role = ($data['email'] === 'sams@mail.com') ? 'admin' : 'user';
+
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
             'role' => $role,
         ]);
 
@@ -42,15 +38,9 @@ class AuthController extends Controller
     }
 
     // LOGIN
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
-
-        // Validate
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $credentials = $request->validated();
 
         // Attempt login
         if (!$token = JWTAuth::attempt($credentials)) {
@@ -60,6 +50,12 @@ class AuthController extends Controller
         }
 
         $user = auth()->user();
+
+        // Ensure configured admin email always has admin role
+        if ($user && $user->email === 'sams@mail.com' && $user->role !== 'admin') {
+            $user->role = 'admin';
+            $user->save();
+        }
 
         return response()->json([
             'message' => 'Login successful',

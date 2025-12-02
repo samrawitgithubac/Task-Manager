@@ -107,6 +107,14 @@ a:hover{ text-decoration:underline; }
 /* Utility small */
 .muted{ color:var(--muted); }
 
+/* Task list / items */
+.task-list{ display:flex; flex-direction:column; gap:10px; }
+.task-item .task-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.task-item .task-row > div{ min-width:0; }
+.task-item .task-actions{ display:flex; align-items:center; gap:8px; }
+.task-item .task-actions .btn{ padding:6px 10px; border-radius:6px; }
+.task-item .badge{ display:inline-block; padding:4px 8px; border-radius:999px; background:#eef2ff; color:var(--primary); font-size:13px; margin-right:8px; }
+
 /* Responsive */
 @media (max-width:520px){
   .auth-card{ width:100%; padding:18px; border-radius:8px; }
