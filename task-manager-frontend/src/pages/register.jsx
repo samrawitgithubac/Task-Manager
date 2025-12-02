@@ -7,7 +7,6 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ export default function Register() {
     e.preventDefault();
     try {
       setLoading(true);
-      await register(name, email, password, role);
+      await register(name, email, password);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
@@ -46,13 +45,7 @@ export default function Register() {
             <input id="password" name="password" type="password" className="form-input" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="role" className="form-label">Role</label>
-            <select id="role" name="role" className="form-input" value={role} onChange={(e) => setRole(e.target.value)}>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+
 
           <button type="submit" className="submit-btn" disabled={loading || !name || !email || !password}>
             {loading ? "Creating account..." : "Register"}

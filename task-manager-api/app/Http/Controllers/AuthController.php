@@ -17,10 +17,12 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
+            'role' => 'nullable|string|in:user,admin',
         ]);
 
-        // Create user (assign admin role for the configured admin email)
-        $role = ($request->email === 'sams@mail.com') ? 'admin' : 'user';
+        // Get role from request, default to 'user' if not provided
+        $role = $request->input('role', 'user');
+        
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -57,12 +59,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // Ensure the configured admin email always has admin role
         $user = auth()->user();
-        if ($user && $user->email === 'sams@mail.com' && $user->role !== 'admin') {
-            $user->role = 'admin';
-            $user->save();
-        }
 
         return response()->json([
             'message' => 'Login successful',

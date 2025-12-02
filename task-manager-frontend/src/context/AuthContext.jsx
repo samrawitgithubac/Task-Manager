@@ -29,12 +29,11 @@ export const AuthProvider = ({ children }) => {
     setUser(res.data.user);
   };
 
-  const register = async (name, email, password, role = "user") => {
+  const register = async (name, email, password) => {
     const res = await axios.post("http://127.0.0.1:8000/api/register", {
       name,
       email,
       password,
-      role,
     });
     setToken(res.data.token);
     localStorage.setItem("token", res.data.token);

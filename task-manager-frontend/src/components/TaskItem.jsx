@@ -11,7 +11,7 @@ export default function TaskItem({ task, onEdit, onDelete }) {
             <div className="muted">Due: {new Date(task.due_date).toLocaleString()}</div>
           ) : null}
           {task.user ? (
-            <div className="muted">Owner: {task.user.name} {task.user.email ? `(${task.user.email})` : ''}</div>
+            <div className="muted">Owner: {task.user.name} {task.user.email ? `(${task.user.email})` : ''} {task.user.role ? `- ${task.user.role}` : ''}</div>
           ) : null}
         </div>
         <div className="task-actions">

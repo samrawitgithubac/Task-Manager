@@ -7,8 +7,8 @@ function authHeader() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export async function getTasks() {
-  const res = await axios.get(`${API_BASE}/tasks`, { headers: { ...authHeader() } });
+export async function getTasks(params = {}) {
+  const res = await axios.get(`${API_BASE}/tasks`, { params, headers: { ...authHeader() } });
   return res.data;
 }
 
